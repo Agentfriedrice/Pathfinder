@@ -1,0 +1,968 @@
+/* ============================================================
+   Pathfinder - stylesheet
+   Layout: mobile-first, single breakpoint at 768px.
+   ============================================================ */
+
+:root {
+  /* Brand blue darkened from #5b8af0 to #3f6fd8 so white text on it
+     clears WCAG AA (4.5:1). The original was 3.31:1 - a real failure. */
+  --blue:        #3f6fd8;
+  --blue-dark:   #2f56ae;
+  --blue-light:  #e8f0fe;
+  --blue-tint:   #c9dcfb;
+
+  --ink:         #12161f;
+  --ink-2:       #3d4450;
+  --text:        #12161f;
+  --text-muted:  #5c6470;   /* 5.98:1 on white */
+  --border:      #dfe3ea;
+  --border-2:    #c8cedb;
+  --surface:     #ffffff;
+  --surface-2:   #f6f8fb;
+
+  --danger:      #c0392b;
+  --success:     #1f7a4d;
+
+  --radius:      10px;
+  --radius-lg:   14px;
+  --shadow-sm:   0 1px 2px rgba(18, 22, 31, .06);
+  --shadow:      0 4px 14px rgba(18, 22, 31, .10);
+  --shadow-lg:   0 12px 32px rgba(18, 22, 31, .16);
+
+  --header-h:    56px;
+  --banner-h:    32px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* The original had `min-width: 1100px`, which forced horizontal
+     scrolling on every phone. Removed. */
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: 1.25; }
+
+/* ---------- Accessibility helpers ---------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  background: var(--ink);
+  color: #fff;
+  padding: .6rem 1rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: top .15s ease;
+}
+.skip-link:focus { top: 8px; }
+
+/* One consistent, visible focus ring everywhere. The original had none,
+   which made the whole app unusable by keyboard. */
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.top-bar :focus-visible { outline-color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- App shell ---------- */
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-banner {
+  background: #fff6e0;
+  border-bottom: 1px solid #f0dfae;
+  color: #6b4e08;
+  font-size: .78rem;
+  text-align: center;
+  padding: .35rem 1rem;
+  line-height: 1.4;
+}
+
+/* ---------- Top bar ---------- */
+
+.top-bar {
+  background: var(--blue);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.top-bar-inner {
+  padding: 0 1rem;
+  min-height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #fff;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand-mark { width: 20px; height: 20px; }
+
+.brand-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  letter-spacing: .01em;
+}
+
+.top-nav {
+  display: flex;
+  gap: .25rem;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.top-nav::-webkit-scrollbar { display: none; }
+
+.nav-link {
+  border: none;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: .95rem;
+  padding: .45rem .7rem;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  transition: background .15s ease;
+}
+.nav-link:hover { background: rgba(255, 255, 255, .16); }
+.nav-link.active { background: rgba(255, 255, 255, .24); font-weight: 600; }
+
+.nav-badge {
+  background: #fff;
+  color: var(--blue-dark);
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 700;
+  min-width: 18px;
+  padding: 0 .3rem;
+  text-align: center;
+  line-height: 18px;
+}
+
+.icon-button {
+  border: none;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  padding: .4rem;
+  border-radius: 50%;
+  position: relative;
+  display: inline-flex;
+  transition: background .15s ease;
+  flex-shrink: 0;
+}
+.icon-button:hover { background: rgba(255, 255, 255, .16); }
+.icon-button svg { width: 21px; height: 21px; display: block; }
+
+.notif-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 8px; height: 8px;
+  background: #ffd23f;
+  border: 1.5px solid var(--blue);
+  border-radius: 50%;
+}
+
+/* ---------- Views ---------- */
+
+.main-layout { flex: 1; display: flex; min-height: 0; }
+.view { display: none; width: 100%; }
+.view.active-view { display: block; }
+.view:focus { outline: none; }
+
+.page-title { font-size: 1.75rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+.page-sub { color: var(--text-muted); margin: 0 0 1.75rem; font-size: .95rem; }
+.muted { color: var(--text-muted); }
+
+/* ============================================================
+   MAP VIEW
+   ============================================================ */
+
+.map-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--header-h) - var(--banner-h));
+}
+
+.map-controls {
+  padding: .75rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  z-index: 5;
+}
+
+.map-search {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 0 .6rem;
+  height: 42px;
+}
+.map-search:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(63, 111, 216, .18);
+}
+.search-icon { width: 17px; height: 17px; color: var(--text-muted); flex-shrink: 0; }
+
+.map-search input {
+  border: none;
+  outline: none;
+  background: none;
+  flex: 1;
+  font: inherit;
+  font-size: .95rem;
+  min-width: 0;
+  color: var(--text);
+}
+.map-search input::-webkit-search-cancel-button { display: none; }
+
+.clear-search {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 .2rem;
+}
+.clear-search:hover { color: var(--text); }
+
+/* Chips wrap onto a second line rather than scrolling horizontally.
+   The old version clipped "Full-time" off the edge of the 320px panel
+   with no visual cue that anything was hidden. */
+.filter-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.chip {
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: .85rem;
+  padding: .35rem .8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease;
+}
+.chip:hover { background: var(--surface-2); }
+.chip.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  font-weight: 500;
+}
+
+.controls-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.result-count { margin: 0; font-size: .82rem; color: var(--text-muted); }
+
+.sort-toggle {
+  border: none;
+  background: none;
+  color: var(--blue-dark);
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 550;
+  cursor: pointer;
+  padding: .15rem .3rem;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.sort-toggle:hover { background: var(--blue-light); }
+.sort-toggle[hidden] { display: none; }
+
+/* ---------- Map canvas ---------- */
+
+.map-area {
+  position: relative;
+  flex: 0 0 38vh;
+  overflow: hidden;
+  background: #dbe9f7;
+  cursor: grab;
+  /* Let the browser handle pinch-zoom; we handle single-finger pan. */
+  touch-action: pinch-zoom;
+  /* Without this, dragging across the map selects the region labels,
+     which is a large part of what made panning feel unreliable. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.map-area.is-dragging { cursor: grabbing; }
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+  will-change: transform;
+}
+/* Animate only for button-driven changes, never mid-drag. */
+.map-canvas.is-animating { transition: transform .25s ease; }
+
+.map-grid {
+  position: absolute;
+  inset: -100%;
+  background-image:
+    linear-gradient(rgba(120, 150, 190, .18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 150, 190, .18) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Decorative layers extend past the canvas so panning never reveals
+   an empty edge. */
+.map-roads {
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+}
+.road { stroke: #fff; stroke-width: .7; fill: none; opacity: .75; vector-effect: non-scaling-stroke; }
+.road-major { stroke-width: 1.6; opacity: .95; }
+
+.map-water {
+  position: absolute;
+  top: -50%; bottom: -50%;
+  left: -60%;
+  width: 73%;
+  background: linear-gradient(90deg, #9ec8ea 0%, #b4d6ef 100%);
+}
+
+.map-label {
+  position: absolute;
+  font-size: .62rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #5d7898;
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+.map-label-water { top: 45%; left: 1.5%; color: #467294; }
+
+.map-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: .7rem;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, .82);
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  pointer-events: none;
+  transition: opacity .3s ease;
+  z-index: 4;
+}
+.map-hint.is-hidden { opacity: 0; }
+
+.marker-layer { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.marker-layer li { position: absolute; margin: 0; }
+
+/* ---------- Pins ---------- */
+
+.job-marker {
+  /* 44px hit target, sized for a fingertip. The original was 18px -
+     below the 24px WCAG minimum. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  position: absolute;
+}
+
+/* With a mouse, a 44px target is unnecessarily large: eight pins worth of
+   invisible padding covers much of the map, so drags that start anywhere
+   near a pin get swallowed. Pointer devices are precise, so shrink to 26px
+   - still comfortably above the 24px minimum - and leave touch alone. */
+@media (pointer: fine) {
+  .job-marker { width: 26px; height: 26px; }
+}
+
+.job-marker .pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+  transition: transform .15s ease, background .15s ease;
+}
+
+.job-marker:hover .pin-dot { transform: scale(1.28); }
+
+.job-marker[aria-pressed="true"] .pin-dot {
+  background: var(--ink);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 5px rgba(63, 111, 216, .3), 0 1px 4px rgba(0, 0, 0, .35);
+}
+
+.job-marker.is-saved .pin-dot { background: var(--success); }
+
+/* Filtered pins fade rather than disappear, so the map doesn't
+   visually jump between filter states. */
+.job-marker.filtered-out { opacity: .22; pointer-events: none; }
+
+/* ---------- User location ---------- */
+
+.user-marker {
+  position: absolute;
+  width: 22px; height: 22px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.user-marker[hidden] { display: none; }
+
+.user-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .4);
+  grid-area: 1 / 1;
+}
+
+.user-pulse {
+  grid-area: 1 / 1;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(26, 115, 232, .35);
+  animation: userPulse 2s ease-out infinite;
+}
+
+@keyframes userPulse {
+  0%   { transform: scale(.6); opacity: .8; }
+  70%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ---------- Map tools ---------- */
+
+.map-tools {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: none;   /* hidden on mobile; shown at >=768px */
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, .94);
+  padding: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  z-index: 6;
+}
+
+.tool-button {
+  width: 36px; height: 36px;
+  background: var(--surface);
+  color: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .15s ease;
+}
+.tool-button:hover { background: var(--surface-2); }
+.tool-button:active { background: var(--blue-light); }
+.tool-button svg { width: 17px; height: 17px; }
+.tool-button.is-active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.tool-button.is-busy { opacity: .6; cursor: progress; }
+
+/* ---------- Mobile job list ---------- */
+
+.mobile-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: .75rem 1rem 2rem;
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.list-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .85rem .95rem;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  width: 100%;
+  display: block;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.list-card:hover { border-color: var(--blue-tint); box-shadow: var(--shadow); }
+.list-card.is-active { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(63, 111, 216, .2); }
+
+.list-card .lc-title { font-weight: 650; font-size: 1rem; }
+.list-card .lc-meta { font-size: .82rem; color: var(--text-muted); margin-top: .1rem; }
+.list-card .lc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-top: .55rem;
+  font-size: .82rem;
+}
+
+/* ---------- Job detail panel ---------- */
+
+.job-details-box {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 1rem 1.1rem calc(1rem + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-lg);
+  z-index: 15;
+  transform: translateY(110%);
+  transition: transform .25s cubic-bezier(.32, .72, 0, 1);
+  max-height: 70dvh;
+  overflow-y: auto;
+}
+.job-details-box.is-open { transform: translateY(0); }
+
+.close-details {
+  position: absolute;
+  top: .55rem; right: .7rem;
+  border: none;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.close-details:hover { background: var(--border); color: var(--text); }
+
+.empty-hint { margin: 0; font-size: .9rem; }
+
+.job-title { font-weight: 700; font-size: 1.15rem; padding-right: 2rem; }
+.job-company { font-size: .95rem; margin-top: .1rem; }
+.job-meta { font-size: .82rem; color: var(--text-muted); margin: .15rem 0 .6rem; }
+.job-desc { font-size: .9rem; margin: .6rem 0 0; }
+
+.job-distance {
+  display: inline-block;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue-dark);
+  background: var(--blue-light);
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  margin-top: .35rem;
+}
+
+.job-deadline {
+  font-size: .82rem;
+  margin-top: .6rem;
+  padding: .4rem .6rem;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.job-deadline.urgent { background: #fdf0ee; border-color: #f2cfc9; color: #8f2c1e; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: .3rem; margin: .5rem 0 0; }
+
+.tag {
+  font-size: .72rem;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-weight: 500;
+}
+
+.detail-actions { margin-top: .9rem; display: flex; gap: .5rem; }
+
+/* ---------- Buttons ---------- */
+
+.primary-button {
+  border-radius: 999px;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  padding: .6rem 1.3rem;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background .15s ease, transform .1s ease;
+}
+.primary-button:hover:not(:disabled) { background: var(--blue-dark); }
+.primary-button:active:not(:disabled) { transform: scale(.98); }
+.primary-button:disabled { background: var(--border-2); color: #4a505c; cursor: not-allowed; }
+.primary-button.is-saved { background: var(--success); }
+
+.secondary-button {
+  border-radius: 999px;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  padding: .35rem 1rem;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+  min-height: 36px;
+}
+.secondary-button:hover { background: var(--surface-2); }
+
+/* ============================================================
+   SAVED VIEW
+   ============================================================ */
+
+.saved-inner { max-width: 640px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+.saved-count { font-size: .88rem; color: var(--text-muted); margin: 0 0 1.5rem; }
+.saved-jobs-list { display: flex; flex-direction: column; gap: .75rem; }
+
+.saved-job {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.saved-job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.saved-job-type { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.saved-job-title { font-weight: 650; font-size: 1.05rem; }
+.saved-job-company { font-size: .9rem; color: var(--text-muted); }
+
+.saved-job-actions { display: flex; align-items: center; gap: .4rem; flex-shrink: 0; }
+
+.saved-job-foot {
+  margin-top: .75rem;
+  padding-top: .7rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem 1rem;
+  font-size: .82rem;
+}
+
+.delete-button {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.delete-button:hover { background: #fdecea; color: var(--danger); }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.empty-state h2 { font-size: 1.05rem; margin: 0 0 .3rem; }
+.empty-state p { color: var(--text-muted); font-size: .9rem; margin: 0 0 1rem; }
+
+/* ============================================================
+   COMMUNITY + PROFILE
+   ============================================================ */
+
+.static-inner, .profile-inner { max-width: 780px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+.card-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+
+.info-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.info-card h2 { font-size: 1.05rem; margin: 0 0 .8rem; }
+.info-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .65rem; }
+.info-card li { font-size: .9rem; }
+
+.event-date {
+  display: inline-block;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-weight: 600;
+  font-size: .75rem;
+  padding: .1rem .45rem;
+  border-radius: 5px;
+  margin-right: .4rem;
+}
+
+.tip-list li { padding-left: 1.1rem; position: relative; color: var(--ink-2); }
+.tip-list li::before { content: ">"; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+
+/* ---------- Profile form ---------- */
+
+.profile-form { display: flex; flex-direction: column; gap: 1.1rem; max-width: 460px; }
+.field { display: flex; flex-direction: column; gap: .3rem; }
+.field label { font-size: .88rem; font-weight: 550; }
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  padding: .55rem .7rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  font: inherit;
+  font-size: .92rem;
+  background: var(--surface);
+  color: var(--text);
+}
+.profile-form input:focus,
+.profile-form textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(63, 111, 216, .18);
+}
+.profile-form textarea { resize: vertical; min-height: 76px; }
+.profile-form input[type="file"] { padding: .4rem; font-size: .85rem; }
+
+.field-hint { font-size: .76rem; color: var(--text-muted); margin: 0; }
+.field-error { font-size: .78rem; color: var(--danger); margin: 0; }
+.field.has-error input { border-color: var(--danger); }
+
+.form-actions { display: flex; align-items: center; gap: .8rem; margin-top: .3rem; }
+.save-status { font-size: .85rem; color: var(--success); font-weight: 500; }
+
+/* ============================================================
+   MODAL + TOAST
+   ============================================================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 22, 31, .45);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-backdrop[hidden] { display: none; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+.modal-head h2 { font-size: 1rem; margin: 0; }
+
+.close-modal {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-muted);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+}
+.close-modal:hover { background: var(--surface-2); color: var(--text); }
+
+.notif-list { list-style: none; margin: 0; padding: .4rem 0; max-height: 60vh; overflow-y: auto; }
+.notif-list li {
+  padding: .75rem 1.1rem;
+  font-size: .88rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+.notif-list li:last-child { border-bottom: none; }
+.notif-time { font-size: .75rem; color: var(--text-muted); }
+
+/* The toast is hidden with opacity + visibility rather than a percentage
+   transform. The old version translated by 120% of its own height, but an
+   empty toast is short enough that 120% didn't clear the `bottom` offset,
+   leaving a black sliver stuck at the bottom of the screen. */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--ink);
+  color: #fff;
+  padding: .65rem 1.2rem;
+  border-radius: 999px;
+  font-size: .87rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  max-width: calc(100vw - 2rem);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+.toast.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity .2s ease, transform .2s ease, visibility 0s;
+}
+
+/* ============================================================
+   DESKTOP  (>= 768px)
+   ============================================================ */
+
+@media (min-width: 768px) {
+
+  .top-bar-inner { padding: 0 1.75rem; gap: 2rem; }
+  .top-nav { gap: .5rem; }
+
+  .map-wrapper { display: block; }
+
+  .map-controls {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 344px;
+    padding: .8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    z-index: 6;
+  }
+
+  .map-area { position: absolute; inset: 0; flex: none; }
+
+  .map-tools { display: flex; }
+
+  .mobile-list { display: none; }
+
+  .job-details-box {
+    position: absolute;
+    left: 16px;
+    right: auto;
+    bottom: 16px;
+    width: 340px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    max-height: calc(100% - 32px);
+    transform: translateY(0) scale(.96);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .job-details-box.is-open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+  /* Before any pin is picked, show the hint card rather than nothing. */
+  .job-details-box.show-hint { opacity: 1; transform: none; pointer-events: auto; }
+
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .info-card:first-child { grid-column: 1 / -1; }
+
+  .page-title { font-size: 2rem; }
+  .saved-inner, .static-inner, .profile-inner { padding-top: 3rem; }
+
+  .modal-backdrop { align-items: center; }
+}
+
+@media (min-width: 1100px) {
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+  .info-card:first-child { grid-column: auto; }
+}

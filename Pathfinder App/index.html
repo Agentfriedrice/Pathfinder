@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pathfinder — Find jobs near campus</title>
+  <meta name="description" content="Pathfinder is a map-based job discovery tool for university students. Browse local internships and jobs by location, save the ones you want, and track application deadlines." />
+  <meta name="theme-color" content="#3f6fd8" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pathfinder — Find jobs near campus" />
+  <meta property="og:description" content="A map-based job discovery tool for university students." />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%233f6fd8'/><circle cx='50' cy='42' r='15' fill='white'/><path d='M50 92 L28 52 L72 52 Z' fill='white'/></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#mainContent">Skip to main content</a>
+
+<div class="app">
+
+  <div class="demo-banner" role="note">
+    <strong>Prototype</strong> — sample listings for demonstration. Not a live job board.
+  </div>
+
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <a class="brand" href="#" aria-label="Pathfinder home">
+        <svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle cx="50" cy="42" r="15" fill="currentColor" />
+          <path d="M50 92 L28 52 L72 52 Z" fill="currentColor" />
+        </svg>
+        <span class="brand-text">Pathfinder</span>
+      </a>
+
+      <nav class="top-nav" role="tablist" aria-label="Main">
+        <button class="nav-link active" role="tab" aria-selected="true"  aria-controls="homeView"      id="tab-home"      data-target="homeView">Home</button>
+        <button class="nav-link"        role="tab" aria-selected="false" aria-controls="savedView"     id="tab-saved"     data-target="savedView">Saved <span id="navSavedBadge" class="nav-badge" hidden>0</span></button>
+        <button class="nav-link"        role="tab" aria-selected="false" aria-controls="communityView" id="tab-community" data-target="communityView">Community</button>
+        <button class="nav-link"        role="tab" aria-selected="false" aria-controls="profileView"   id="tab-profile"   data-target="profileView">Profile</button>
+      </nav>
+
+      <button class="icon-button" id="notifButton" aria-label="Notifications" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm7-5.2v-5.3a7 7 0 0 0-5.3-6.8V4a1.7 1.7 0 0 0-3.4 0v.7A7 7 0 0 0 5 11.5v5.3l-1.6 1.6v.8h17.2v-.8Z"
+                fill="currentColor" />
+        </svg>
+        <span class="notif-dot" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-layout" id="mainContent">
+
+    <!-- ── HOME / MAP ─────────────────────────────────────────── -->
+    <section id="homeView" class="view active-view" role="tabpanel" aria-labelledby="tab-home" tabindex="-1">
+      <div class="map-wrapper">
+
+        <div class="map-controls">
+          <div class="map-search">
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" fill="currentColor" />
+            </svg>
+            <label class="visually-hidden" for="searchInput">Search jobs</label>
+            <input id="searchInput" type="search" placeholder="Search role, company, or skill" autocomplete="off" />
+            <button id="clearSearch" class="clear-search" aria-label="Clear search" hidden>&times;</button>
+          </div>
+
+          <div class="filter-row" role="group" aria-label="Filter by job type">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="Internship">Internships</button>
+            <button class="chip" data-filter="Part Time">Part-time</button>
+            <button class="chip" data-filter="Full Time">Full-time</button>
+          </div>
+
+          <div class="controls-foot">
+            <p id="resultCount" class="result-count" role="status" aria-live="polite"></p>
+            <button id="sortToggle" class="sort-toggle" hidden>Nearest first</button>
+          </div>
+        </div>
+
+        <div class="map-tools">
+          <button class="tool-button" id="zoomIn"  aria-label="Zoom in">+</button>
+          <button class="tool-button" id="zoomOut" aria-label="Zoom out">&minus;</button>
+          <button class="tool-button" id="locateMe" aria-label="Show my location">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 3A9 9 0 0 0 13 3.06V1h-2v2.06A9 9 0 0 0 3.06 11H1v2h2.06A9 9 0 0 0 11 20.94V23h2v-2.06A9 9 0 0 0 20.94 13H23v-2ZM12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="tool-button" id="resetMap" aria-label="Reset map view">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7Z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="mapArea" class="map-area">
+          <div class="map-canvas" id="mapCanvas">
+            <div class="map-grid" aria-hidden="true"></div>
+            <svg class="map-roads" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M0 62 H100" class="road road-major" />
+              <path d="M22 0 V100" class="road road-major" />
+              <path d="M0 28 H100" class="road" />
+              <path d="M68 0 V100" class="road" />
+              <path d="M0 85 H100" class="road" />
+              <path d="M45 0 V100" class="road" />
+            </svg>
+            <div class="map-water" aria-hidden="true"></div>
+            <span class="map-label map-label-water" aria-hidden="true">Pacific Ocean</span>
+            <span class="map-label" style="top:12%; left:70%;" aria-hidden="true">Sorrento Valley</span>
+            <span class="map-label" style="top:56%; left:73%;" aria-hidden="true">UTC</span>
+            <span class="map-label" style="top:84%; left:16%;" aria-hidden="true">La Jolla</span>
+
+            <div id="userMarker" class="user-marker" hidden>
+              <span class="user-pulse" aria-hidden="true"></span>
+              <span class="user-dot" aria-hidden="true"></span>
+            </div>
+
+            <ul id="markerLayer" class="marker-layer" aria-label="Job locations on map"></ul>
+          </div>
+
+          <p class="map-hint" id="mapHint">Drag to pan · scroll to zoom</p>
+        </div>
+
+        <aside id="jobDetailsBox" class="job-details-box" aria-live="polite">
+          <button id="closeDetails" class="close-details" aria-label="Close job details" hidden>&times;</button>
+          <div id="jobDetailsContent">
+            <p class="muted empty-hint">Select a pin on the map to see job details.</p>
+          </div>
+          <div class="detail-actions">
+            <button id="saveJobButton" class="primary-button" disabled>Save job</button>
+          </div>
+        </aside>
+
+        <!-- Mobile-only list fallback: a pin map is unusable at phone width -->
+        <div class="mobile-list" id="mobileList" aria-label="Job listings"></div>
+      </div>
+    </section>
+
+    <!-- ── SAVED ──────────────────────────────────────────────── -->
+    <section id="savedView" class="view" role="tabpanel" aria-labelledby="tab-saved" tabindex="-1">
+      <div class="saved-inner">
+        <h1 class="page-title">Your saved jobs</h1>
+        <p id="savedCount" class="saved-count">0 jobs</p>
+        <div id="savedJobsContainer" class="saved-jobs-list"></div>
+      </div>
+    </section>
+
+    <!-- ── COMMUNITY ──────────────────────────────────────────── -->
+    <section id="communityView" class="view" role="tabpanel" aria-labelledby="tab-community" tabindex="-1">
+      <div class="static-inner">
+        <h1 class="page-title">Community</h1>
+        <p class="page-sub">Connect with people who've been where you are.</p>
+
+        <div class="card-grid">
+          <article class="info-card">
+            <h2>Upcoming events</h2>
+            <ul class="event-list">
+              <li><span class="event-date">Aug 4</span> Fall Career Fair — Price Center Ballroom</li>
+              <li><span class="event-date">Aug 12</span> Resume Review Drop-in — Career Center</li>
+              <li><span class="event-date">Aug 19</span> Tech Mock Interviews — CSE 1202</li>
+            </ul>
+          </article>
+
+          <article class="info-card">
+            <h2>Connect with alumni</h2>
+            <p class="muted">Browse graduates working in roles you're aiming for and reach out for a short chat.</p>
+            <ul class="alum-list">
+              <li><strong>Priya R.</strong> — SWE at Pacific Systems <span class="muted">'23, CSE</span></li>
+              <li><strong>Marcus T.</strong> — Product at Triton Apps <span class="muted">'22, COGS</span></li>
+              <li><strong>Dana L.</strong> — UX Research at Harborline <span class="muted">'24, ICAM</span></li>
+            </ul>
+          </article>
+
+          <article class="info-card">
+            <h2>Career tips</h2>
+            <ul class="tip-list">
+              <li>Apply within 72 hours of a posting going up — response rates drop sharply after the first week.</li>
+              <li>Tailor the top third of your resume to each role. Most screens never reach the bottom.</li>
+              <li>One specific project beats five vague ones. Depth reads as competence.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PROFILE ────────────────────────────────────────────── -->
+    <section id="profileView" class="view" role="tabpanel" aria-labelledby="tab-profile" tabindex="-1">
+      <div class="profile-inner">
+        <h1 class="page-title">Profile</h1>
+        <p class="page-sub">Saved locally in your browser. Nothing is uploaded.</p>
+
+        <form class="profile-form" id="profileForm" novalidate>
+          <div class="field">
+            <label for="pfName">Name</label>
+            <input id="pfName" name="name" type="text" placeholder="Your name" autocomplete="name" />
+          </div>
+
+          <div class="field">
+            <label for="pfMajor">Major</label>
+            <input id="pfMajor" name="major" type="text" placeholder="e.g., CSE, COGS, ICAM" />
+          </div>
+
+          <div class="field">
+            <label for="pfGrad">Graduation year</label>
+            <input id="pfGrad" name="grad" type="number" min="2020" max="2035" step="1" placeholder="2027" />
+          </div>
+
+          <div class="field">
+            <label for="pfBio">Short bio</label>
+            <textarea id="pfBio" name="bio" rows="3" maxlength="280"
+              placeholder="A sentence about what you're interested in."></textarea>
+            <p class="field-hint"><span id="bioCount">0</span>/280</p>
+          </div>
+
+          <div class="field">
+            <label for="pfUrl">Portfolio or LinkedIn URL</label>
+            <input id="pfUrl" name="url" type="url" placeholder="https://" />
+            <p class="field-error" id="pfUrlError" hidden>Enter a full URL starting with http:// or https://</p>
+          </div>
+
+          <div class="field">
+            <label for="pfResume">Resume</label>
+            <input id="pfResume" name="resume" type="file" accept=".pdf,.doc,.docx" />
+            <p class="field-hint">PDF or Word, max 5&nbsp;MB.</p>
+            <p class="field-error" id="pfResumeError" hidden></p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-button" id="saveProfileBtn">Save profile</button>
+            <span id="profileStatus" class="save-status" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Notifications panel -->
+<div class="modal-backdrop" id="notifPanel" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="notifTitle">
+    <div class="modal-head">
+      <h2 id="notifTitle">Notifications</h2>
+      <button class="close-modal" id="closeNotif" aria-label="Close notifications">&times;</button>
+    </div>
+    <ul class="notif-list">
+      <li><strong>Deadline soon</strong> — Front-End Developer at Coastline Studio closes in 3 days.<span class="notif-time">2h ago</span></li>
+      <li><strong>New listing</strong> — 2 new internships posted near campus.<span class="notif-time">Yesterday</span></li>
+      <li><strong>Event</strong> — Fall Career Fair registration is open.<span class="notif-time">3 days ago</span></li>
+    </ul>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
